@@ -24,6 +24,11 @@ run_encswap() {
         return 1
     fi
 
+    if [ ! -e /sys/power/resume ]; then
+        err "encswap: no hibernation support found"
+        return 1
+    fi
+
     # Mount the root disk and copy the keyfile to /encswap.key (/ resides in RAM).
     mkdir /encswaproot
     if mount -o ro,nosuid,noexec,nodev "/dev/mapper/${cryptname}" /encswaproot ; then
@@ -40,11 +45,6 @@ run_encswap() {
     if ! cryptsetup open --type plain --cipher aes-xts-plain64:sha256 --key-file /encswap.key "${resolvedswapdev}" encswapSwapFile ${swapdevopts}; then
         echo "encswap: Keyfile cannot be used to unlock the swap device"
         return 0
-    fi
-
-    if [ ! -e /sys/power/resume ]; then
-        err "encswap: no hibernation support found"
-        return 1
     fi
 
     printf "%d:%d" $(stat -Lc "0x%t 0x%T" /dev/mapper/encswapSwapFile) >/sys/power/resume
