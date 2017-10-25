@@ -36,11 +36,6 @@ run_hook () {
         echo "encswap: Keyfile cannot be used to unlock the swap device"
         return 0
     fi
-    # Use in /etc/fstab as:
-    # /dev/mapper/encswapSwapFile  none  swap  sw,nofail  0  0
-    # PS. Why "sw"?
-    # Answer: https://unix.stackexchange.com/questions/365953/what-sw-means-in-the-fstab-swap-entry-for-mount-options-column
-    # Answer: https://www.gnu.org/software/libc/manual/html_node/fstab.html
 
     if [ ! -e /sys/power/resume ]; then
         err "encswap: no hibernation support found"
