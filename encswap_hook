@@ -46,7 +46,8 @@ run_encswap() {
         err "encswap: no hibernation support found"
         return 1
     fi
-    printf "%d:%d" $(stat -Lc "0x%t 0x%T" "${resolvedswapdev}") >/sys/power/resume
+
+    printf "%d:%d" $(stat -Lc "0x%t 0x%T" /dev/mapper/encswapSwapFile) >/sys/power/resume
 
     # If we are at this point, then resume failed and we proceed to boot normally.
     cryptsetup close encswapSwapFile
