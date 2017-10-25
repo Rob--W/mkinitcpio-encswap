@@ -32,7 +32,7 @@ run_hook () {
         return 0
     fi
 
-    if ! cryptsetup open --type plain --cipher aes-xts-plain64:sha256 --key-file /encswap.key "${resolvedswapdev}" encswapSwapFile ; then
+    if ! cryptsetup open --type plain --cipher aes-xts-plain64:sha256 --key-file /encswap.key "${resolvedswapdev}" encswapSwapFile ${swapdevopts}; then
         echo "encswap: Keyfile cannot be used to unlock the swap device"
         return 0
     fi
