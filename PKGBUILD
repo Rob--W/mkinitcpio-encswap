@@ -11,28 +11,28 @@ conflicts=()
 backup=(etc/encswap.conf)
 install=mkinitcpio-encswap.install
 source=("50-encswap.conf"
-		"encswap.conf"
-		"encswap_hook"
-		"encswap_install"
-		"encswap.service"
-		"encswap.sh")
+        "encswap.conf"
+        "encswap_hook"
+        "encswap_install"
+        "encswap.service"
+        "encswap.sh")
 sha256sums=("SKIP"
-			"SKIP"
-			"SKIP"
-			"SKIP"
-			"SKIP"
-			"SKIP")
+            "SKIP"
+            "SKIP"
+            "SKIP"
+            "SKIP"
+            "SKIP")
 
 package() {
-	install -Dm 644 encswap.conf "${pkgdir}/etc/encswap.conf"
-	install -Dm 644 encswap_hook "${pkgdir}/usr/lib/initcpio/hooks/encswap"
-	install -Dm 644 encswap_install "${pkgdir}/usr/lib/initcpio/install/encswap"
+    install -Dm 644 encswap.conf "${pkgdir}/etc/encswap.conf"
+    install -Dm 644 encswap_hook "${pkgdir}/usr/lib/initcpio/hooks/encswap"
+    install -Dm 644 encswap_install "${pkgdir}/usr/lib/initcpio/install/encswap"
 
-	# Let's first try to use a service. If that fails we can consider using a hook, see man systemd-hibernate.service
-	#install -Dm 644 encswap_systemd_sleep_hook "${pkgdir}/usr/lib/systemd/system-sleep/encswap"
+    # Let's first try to use a service. If that fails we can consider using a hook, see man systemd-hibernate.service
+    #install -Dm 644 encswap_systemd_sleep_hook "${pkgdir}/usr/lib/systemd/system-sleep/encswap"
 
-	# https://github.com/systemd/systemd/pull/3006#issuecomment-211347763
-	install -Dm 644 50-encswap.conf "${pkgdir}/etc/systemd/system/systemd-logind.service.d/50-encswap.conf"
-	install -Dm 644 encswap.service "${pkgdir}/etc/systemd/system/encswap.service"
-	install -Dm 744 encswap.sh "${pkgdir}/usr/lib/systemd/scripts/encswap.sh"
+    # https://github.com/systemd/systemd/pull/3006#issuecomment-211347763
+    install -Dm 644 50-encswap.conf "${pkgdir}/etc/systemd/system/systemd-logind.service.d/50-encswap.conf"
+    install -Dm 644 encswap.service "${pkgdir}/etc/systemd/system/encswap.service"
+    install -Dm 744 encswap.sh "${pkgdir}/usr/lib/systemd/scripts/encswap.sh"
 }
