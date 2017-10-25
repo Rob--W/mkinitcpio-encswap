@@ -1,7 +1,7 @@
 # TODO: Auto-detect suitable values for encswap.conf?
 
 post_install() {
-	cat <<MSG
+    cat <<MSG
 
 For documentation, run:
 mkinitcpio -H encswap
