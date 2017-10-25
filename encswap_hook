@@ -9,7 +9,7 @@ run_hook () {
         err "encswap: Swap device not found"
         return 1
     fi
-    if [ -z "${swapkeyfile}" ; then
+    if [ -z "${swapkeyfile}" ] ; then
         err "encswap: Keyfile not configured"
         return 1
     fi
