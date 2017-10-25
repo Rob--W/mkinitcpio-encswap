@@ -16,7 +16,12 @@ source=("50-encswap.conf"
 		"encswap_install"
 		"encswap.service"
 		"encswap.sh")
-#sha256sums=() #TODO
+sha256sums=("SKIP"
+			"SKIP"
+			"SKIP"
+			"SKIP"
+			"SKIP"
+			"SKIP")
 
 package() {
 	install -Dm 644 encswap.conf "${pkgdir}/etc/encswap.conf"
