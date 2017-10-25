@@ -14,7 +14,7 @@ run_swapon() {
         return 1
     fi
     echo "encswap: Turning on swap"
-    head -c 512 /dev/urandom | install -m 0600 /dev/stdin "${swapkeyfile}"
+    head -c "${swapkeyfilesize}" /dev/urandom | install -m 0600 /dev/stdin "${swapkeyfile}"
     cryptsetup open --type plain --cipher aes-xts-plain64:sha256 --key-file "${swapkeyfile}" "${swapdev}" encswapSwapFile ${swapdevopts}
     mkswap /dev/mapper/encswapSwapFile
     swapon /dev/mapper/encswapSwapFile

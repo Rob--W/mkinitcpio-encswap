@@ -52,5 +52,19 @@ run_encswap() {
     # If we are at this point, then resume failed and we proceed to boot normally.
     cryptsetup close encswapSwapFile
     echo "encswap: Unable to resume. Possibly not hibernated."
-    # TODO: Maybe mount and remove swapkeyfile at this point?
+
+    # cryptoptions is leaked by the encrypt hook.
+    for cryptopt in ${cryptoptions//,/ }; do
+        if [ "${cryptopt}" = "allow-discards" ] ; then
+            maybediscard=,discard
+        fi
+    done
+
+    if mount -o rw,nosuid,noexec,nodev,noatime${maybediscard} "/dev/mapper/${cryptname}" /encswaproot ; then
+        # Shred keyfile to minimize exposure of the swap content.
+        dd if=/dev/urandom of="/encswaproot/${swapkeyfile}" bs="${swapkeyfilesize}" count=1 >/dev/null 2>&1
+        rm "/encswaproot/${swapkeyfile}"
+        umount /encswaproot
+        echo "encswap: Shredded keyfile"
+    fi
 }
