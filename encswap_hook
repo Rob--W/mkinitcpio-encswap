@@ -1,0 +1,55 @@
+#!/usr/bin/ash
+
+run_hook () {
+    local swapdev swapkeyfile
+    . /encswap.conf
+    local resolvedswapdev=$(resolve_device "${swapdev}" ${rootdelay})
+
+    if [ -z "${resolvedswapdev}" ] ; then
+        err "encswap: Swap device not found"
+        return 1
+    fi
+    if [ -z "${swapkeyfile}" ; then
+        err "encswap: Keyfile not configured"
+        return 1
+    fi
+
+    if [ -z "$cryptname" ] ; then
+        err "encswap: Did not find encrypted root image (unlocked by encrypt)."
+        return 1
+    fi
+
+    # Mount the root disk and copy the keyfile to /encswap.key (/ resides in RAM).
+    mkdir /encswaproot
+    if mount -o ro,nosuid,noexec,nodev "/dev/mapper/${cryptname}" /encswaproot ; then
+        dd if="/encswaproot/${swapkeyfile}" of="/encswap.key" >/dev/null 2>&1
+        umount /encswaproot
+    fi
+
+    if [ ! -s "/encswap.key" ] ; then
+        # The key is only set before hibernation.
+        echo "encswap: Keyfile not found in root filesystem"
+        return 0
+    fi
+
+    if ! cryptsetup open --type plain --cipher aes-xts-plain64:sha256 --key-file /encswap.key "${resolvedswapdev}" encswapSwapFile ; then
+        echo "encswap: Keyfile cannot be used to unlock the swap device"
+        return 0
+    fi
+    # Use in /etc/fstab as:
+    # /dev/mapper/encswapSwapFile  none  swap  sw,nofail  0  0
+    # PS. Why "sw"?
+    # Answer: https://unix.stackexchange.com/questions/365953/what-sw-means-in-the-fstab-swap-entry-for-mount-options-column
+    # Answer: https://www.gnu.org/software/libc/manual/html_node/fstab.html
+
+    if [ ! -e /sys/power/resume ]; then
+        err "encswap: no hibernation support found"
+        return 1
+    fi
+    printf "%d:%d" $(stat -Lc "0x%t 0x%T" "${resolvedswapdev}") >/sys/power/resume
+
+    # If we are at this point, then resume failed and we proceed to boot normally.
+    crypsetup close encswapSwapFile
+    echo "encswap: Unable to resume. Possibly not hibernated."
+    # TODO: Maybe mount and remove swapkeyfile at this point?
+}

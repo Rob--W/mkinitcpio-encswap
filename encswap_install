@@ -1,0 +1,26 @@
+#!/bin/bash
+
+build() {
+    cp /etc/encswap.conf "$BUILDROOT/encswap.conf"
+    add_runscript
+}
+
+help() {
+    cat <<HELPEOF
+This hook initializes support for resuming from an encrypted swapfile for which
+the keyfile is located in the encrypted filesystem. The swap device and the
+location of the keyfile is configured in /etc/encswap.conf
+
+To use this module, edit /etc/mkinitcpio.conf and add "encswap" to HOOKS,
+after "encrypt".
+
+Do NOT use the "resume" hook, encswap provides resumption from a hibernated
+system.
+
+After editing /etc/encswap.conf, rebuild the initramfs image:
+mkinitcpio -p linux
+
+HELPEOF
+}
+
+# vim: set ft=sh ts=4 sw=4 et:

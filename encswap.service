@@ -1,0 +1,20 @@
+# Thanks to https://github.com/systemd/systemd/pull/3006
+# for the skeleton + "SYSTEMD_BYPASS_HIBERNATION_MEMORY_CHECK"
+# environment variable.
+
+[Unit]
+Description=Mount and unmount an encrypted swap file when hibernating or resuming
+DefaultDependencies=no
+Before=systemd-hibernate.service systemd-hybrid-sleep.service
+StopWhenUnneeded=yes
+RefuseManualStart=yes
+RefuseManualStop=yes
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/lib/systemd/scripts/encswap.sh swapon
+ExecStop=/usr/lib/systemd/scripts/encswap.sh swapoff
+
+[Install]
+RequiredBy=systemd-hibernate.service systemd-hybrid-sleep.service
