@@ -14,10 +14,13 @@ location of the keyfile is configured in /etc/encswap.conf
 To use this module, edit /etc/mkinitcpio.conf and add "encswap" to HOOKS,
 after "encrypt".
 
-Do NOT use the "resume" hook, encswap provides resumption from a hibernated
-system.
+encswap is designed to support resumption after hibernation, so the "suspend"
+hook is unnecessary and should not be used. Do not set any suspend-related
+kernel parameters.
+The encswap.service systemd service is responsible for refreshing a key
+and enabling swap before hibernation.
 
-After editing /etc/encswap.conf, rebuild the initramfs image:
+After editing the configuration, rebuild the initramfs image:
 mkinitcpio -p linux
 
 HELPEOF
