@@ -1,6 +1,11 @@
 #!/usr/bin/ash
 
 run_hook () {
+    run_encswap
+    sleep 5 # For debugging, so I can see what happens.
+}
+
+run_encswap() {
     local swapdev swapkeyfile
     . /encswap.conf
     local resolvedswapdev=$(resolve_device "${swapdev}" ${rootdelay})
