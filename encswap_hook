@@ -49,7 +49,7 @@ run_encswap() {
     printf "%d:%d" $(stat -Lc "0x%t 0x%T" "${resolvedswapdev}") >/sys/power/resume
 
     # If we are at this point, then resume failed and we proceed to boot normally.
-    crypsetup close encswapSwapFile
+    cryptsetup close encswapSwapFile
     echo "encswap: Unable to resume. Possibly not hibernated."
     # TODO: Maybe mount and remove swapkeyfile at this point?
 }
