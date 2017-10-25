@@ -22,14 +22,14 @@ run_swapon() {
 }
 
 run_swapoff() {
-    if ! -e /dev/mapper/encswapSwapFile ; then
+    if [ ! -e /dev/mapper/encswapSwapFile ] ; then
         # Unexpectedly, the swap disappeared after resume...?
         echo "encswap: /dev/mapper/encswapSwapFile not found"
         return 0
     fi
     echo "encswap: Turning off swap"
     swapoff /dev/mapper/encswapSwapFile
-    crypsetup close encswapSwapFile
+    cryptsetup close encswapSwapFile
     # shred is not reliable on SSD (i.e. file content can still be available).
     # However the location of the swapfile should be encrypted anyway, so the risk of a not 100% working shred is minimal.
     shred -n1 --remove "${swapkeyfile}"
