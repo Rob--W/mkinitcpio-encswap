@@ -19,6 +19,7 @@ run_encswap() {
         return 1
     fi
 
+    # cryptname is leaked by the encrypt hook.
     if [ -z "$cryptname" ] ; then
         err "encswap: Did not find encrypted root image (unlocked by encrypt)."
         return 1
@@ -38,7 +39,7 @@ run_encswap() {
 
     if [ ! -s "/encswap.key" ] ; then
         # The key is only set before hibernation.
-        echo "encswap: Keyfile not found in root filesystem"
+        echo "encswap: The swap file does not contain a hibernation image (keyfile not found)."
         return 0
     fi
 
@@ -51,6 +52,10 @@ run_encswap() {
 
     # If we are at this point, then resume failed and we proceed to boot normally.
     cryptsetup close encswapSwapFile
+
+    # If not hibernated, then the keyfile should have been removed. But if the
+    # system shuts down before our encswap service runs, then it is possible to
+    # reach this place.
     echo "encswap: Unable to resume. Possibly not hibernated."
 
     # cryptoptions is leaked by the encrypt hook.
