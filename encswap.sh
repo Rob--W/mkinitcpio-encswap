@@ -4,7 +4,7 @@ set -e
 . /etc/encswap.conf
 
 run_swapon() {
-    if  -e /dev/mapper/encswapSwapFile ; then
+    if [ -e /dev/mapper/encswapSwapFile ] ; then
         # This is unexpected and should not happen, because the swap should only be mounted
         # right before hibernation. We don't add the swap to /etc/fstab and do not try to
         # mount it in other circumstances. So if we got here, then something went wrong...
