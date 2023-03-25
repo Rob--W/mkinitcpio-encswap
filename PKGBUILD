@@ -1,6 +1,6 @@
 # Maintainer: Rob Wu <rob@robwu.nl>
 pkgname=mkinitcpio-encswap
-pkgver=0.1.0
+pkgver=0.1.1
 pkgrel=1
 pkgdesc="mkinitcpio hook to use an encrypted swap device with a temporary keyfile on the encrypted filesystem for hibernation."
 arch=(any)
